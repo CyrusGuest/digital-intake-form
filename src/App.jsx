@@ -157,7 +157,7 @@ function App() {
 
   if (ticketSubmitted)
     return (
-      <div className="my-8 mx-auto md:shadow-lg rounded-lg p-6 w-full md:w-2/3 lg:w-1/2">
+      <div className="my-8 mx-auto md:shadow-2xl rounded-lg p-6 w-full md:w-2/3 lg:w-1/2">
         <img className="max-w-sm" src={ummhLogo} alt="UMMH Logo" />
         <h1 className="font-bold text-2xl mt-2">Digital Intake Form</h1>
         <h3 className="text-2xl mt-4">
@@ -181,7 +181,7 @@ function App() {
     );
 
   return (
-    <div className="md:my-8 mx-auto md:shadow-lg rounded-lg p-6 w-full md:w-2/3 lg:w-1/2">
+    <div className="md:my-8 mx-auto md:shadow-2xl rounded-lg p-6 w-full md:w-2/3 lg:w-1/2">
       <img className="max-w-sm" src={ummhLogo} alt="UMMH Logo" />
       <h1 className="font-bold text-2xl mt-2">Digital Intake Form</h1>
       {/* <p className="text-sm text-gray-500">
