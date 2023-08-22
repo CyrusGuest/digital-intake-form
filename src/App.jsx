@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import ummhLogo from "./images/ummhLogo.png";
 import axios from "axios";
 import Loading from "./components/Loading";
+import { toast } from "react-toastify";
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [ticketSubmitted, setTicketSubmitted] = useState(false);
   const [email, setEmail] = useState("");
   const [summary, setSummary] = useState("");
@@ -20,6 +21,50 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    const urlPattern = /^(https?:\/\/www\.)[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$/;
+
+    if (!emailRegex.test(email)) {
+      return toast.error("Please enter a valid email", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    if (email === "" || summary === "" || requestType === null) {
+      return toast.error("Please fill out all required fields", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    if (url !== "") {
+      if (!urlPattern.test(url)) {
+        return toast.error("Please enter a valid URL", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    }
 
     setEmail("");
     setSummary("");
@@ -48,10 +93,33 @@ function App() {
         headers: { "Content-Type": "application/json" },
       });
 
+      toast.success("Successfully submitted new ticket 🎉", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
       setLoading(false);
       setTicketSubmitted(true);
     } catch (error) {
-      console.log(error);
+      toast.error(
+        "Ticket submission failed. Contact Digital Services for assistance",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
     }
   };
 
