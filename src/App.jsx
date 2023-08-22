@@ -412,7 +412,8 @@ function App() {
               Submit ticket
             </button>
             <p className="text-sm text-gray-500 text-center mt-3">
-              The Digital Services team will reach out via email.
+              The Digital Services team will reach out via email at
+              DigitalWeb@umassmemorial.org.
             </p>
           </div>
         </form>
