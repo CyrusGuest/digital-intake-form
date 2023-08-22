@@ -15,9 +15,37 @@ function App() {
   const [url, setUrl] = useState("");
   const [severity, setSeverity] = useState(null);
   const [dueDate, setDueDate] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [ticketID, setTicketID] = useState(null);
 
   const lambdaUrl =
     "https://1y7dwhyt4g.execute-api.us-east-1.amazonaws.com/development/create-issue"; // Replace with your Lambda function URL
+
+  const handleFileChange = (e) => {
+    const fileList = [...e.target.files];
+    const encodedFiles = [];
+
+    fileList.forEach((file, index) => {
+      const reader = new FileReader();
+
+      reader.onloadend = function () {
+        const base64String = reader.result.replace(/^data:(.*;base64,)?/, "");
+
+        encodedFiles.push({
+          name: file.name,
+          mimeType: file.type,
+          content: base64String,
+        });
+
+        // Check if we've processed all files
+        if (encodedFiles.length === fileList.length) {
+          setFiles(encodedFiles);
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,8 +116,10 @@ function App() {
       duedate: dueDate,
     };
 
+    if (files.length > 0) data.uploadedFiles = files;
+
     try {
-      await axios.post(lambdaUrl, JSON.stringify(data), {
+      const response = await axios.post(lambdaUrl, JSON.stringify(data), {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -103,6 +133,8 @@ function App() {
         progress: undefined,
         theme: "light",
       });
+
+      setTicketID(response.data.ticketID);
 
       setLoading(false);
       setTicketSubmitted(true);
@@ -129,7 +161,9 @@ function App() {
         <img className="max-w-sm" src={ummhLogo} alt="UMMH Logo" />
         <h1 className="font-bold text-2xl mt-2">Digital Intake Form</h1>
         <h3 className="text-2xl mt-4">
-          Your tickets been successfully submitted.
+          Your ticket{" "}
+          <span className="font-bold text-[#10069f]">{ticketID}</span> has been
+          submitted.
         </h3>
         <p className="text-sm text-gray-600">
           The digital services team will be in contact you via email.
@@ -389,20 +423,18 @@ function App() {
             />
           </div>
 
-          {/* <label className="font-bold mt-8" htmlFor="export">
-          Select the daily export file for input
-        </label>
-        <input className="mt-1" type="file" />
-        <label className="font-bold mt-8" htmlFor="export">
-          Output directory:{" "}
-          <span className="truncate text-[#10069f] font-normal"></span>
-        </label>
-        <button
-          className="rounded-lg p-3 mt-1 shadow-lg bg-[#10069f] text-white font-bold hover:bg-white hover:text-[#10069f] transition-all duration-200"
-          type="button"
-        >
-          Select directory
-        </button> */}
+          <div className="flex flex-col">
+            <label className="font-bold" htmlFor="export">
+              Submit any relevant attachments below
+            </label>
+            <input
+              className="mt-1"
+              type="file"
+              multiple
+              onChange={handleFileChange}
+            />
+          </div>
+
           <div className="flex flex-col">
             <button
               className="shadow-lg font-bold rounded-lg p-3 mt-5 bg-[#10069f] text-white hover:bg-white hover:text-[#10069f] transition-all duration-200"
