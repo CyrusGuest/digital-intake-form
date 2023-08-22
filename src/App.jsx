@@ -4,7 +4,7 @@ import axios from "axios";
 import Loading from "./components/Loading";
 
 function App() {
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(true);
   const [ticketSubmitted, setTicketSubmitted] = useState(false);
   const [email, setEmail] = useState("");
   const [summary, setSummary] = useState("");
@@ -79,7 +79,7 @@ function App() {
     );
 
   return (
-    <div className="md:my-8 mx-auto shadow-lg rounded-lg p-6 w-full md:w-2/3 lg:w-1/2">
+    <div className="md:my-8 mx-auto md:shadow-lg rounded-lg p-6 w-full md:w-2/3 lg:w-1/2">
       <img className="max-w-sm" src={ummhLogo} alt="UMMH Logo" />
       <h1 className="font-bold text-2xl mt-2">Digital Intake Form</h1>
       {/* <p className="text-sm text-gray-500">
