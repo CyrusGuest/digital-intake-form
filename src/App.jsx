@@ -13,7 +13,7 @@ function App() {
   const [dueDate, setDueDate] = useState(null);
 
   const lambdaUrl =
-    "https://r4uhivlvw3oxu6slx5xk2i6sgu0dujzq.lambda-url.us-east-1.on.aws/"; // Replace with your Lambda function URL
+    "https://1y7dwhyt4g.execute-api.us-east-1.amazonaws.com/development/create-issue"; // Replace with your Lambda function URL
 
   const handleSubmit = async (e) => {
     e.preventDefault();
