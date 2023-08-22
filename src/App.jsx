@@ -3,7 +3,6 @@ import ummhLogo from "./images/ummhLogo.png";
 import axios from "axios";
 
 function App() {
-  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
