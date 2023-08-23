@@ -53,7 +53,7 @@ function App() {
 
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
     const urlPattern =
-      /^(https?:\/\/)(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+)(\/[a-zA-Z0-9-._~:\/?#\[\]@!$&'()*+,;=%]*)?$/;
+      /^https?:\/\/(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+)(\/[a-zA-Z0-9-._~:/?#[@!$&'()*+,;=%]*)?$/;
 
     if (!emailRegex.test(email)) {
       return toast.error("Please enter a valid email", {
