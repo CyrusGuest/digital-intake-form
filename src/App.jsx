@@ -17,7 +17,7 @@ function App() {
   const [dueDate, setDueDate] = useState(null);
   const [files, setFiles] = useState([]);
   const [ticketID, setTicketID] = useState(null);
-  const [showUrlDialog, setShowUrlDialog] = useState(true);
+  const [showUrlDialog, setShowUrlDialog] = useState(false);
 
   const lambdaUrl =
     "https://1y7dwhyt4g.execute-api.us-east-1.amazonaws.com/development/create-issue"; // Replace with your Lambda function URL
