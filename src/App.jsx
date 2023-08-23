@@ -52,7 +52,8 @@ function App() {
     e.preventDefault();
 
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-    const urlPattern = /^(https?:\/\/www\.)[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$/;
+    const urlPattern =
+      /^(https?:\/\/)(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+)(\/[a-zA-Z0-9-._~:\/?#\[\]@!$&'()*+,;=%]*)?$/;
 
     if (!emailRegex.test(email)) {
       return toast.error("Please enter a valid email", {
@@ -275,7 +276,7 @@ function App() {
             </div>
             <div className="flex flex-col">
               <label className="font-bold" htmlFor="requestType">
-                Request Type
+                Request Type<span className="text-red-600">*</span>
               </label>
 
               <fieldset className="flex flex-col gap-2">
