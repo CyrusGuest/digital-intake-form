@@ -10,6 +10,7 @@ function App() {
   const [email, setEmail] = useState("");
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
+  const [requester, setRequester] = useState("");
   const [requestType, setRequestType] = useState(null);
   const [stepsToReproduce, setStepsToReproduce] = useState("");
   const [url, setUrl] = useState("");
@@ -18,6 +19,8 @@ function App() {
   const [files, setFiles] = useState([]);
   const [ticketID, setTicketID] = useState(null);
   const [showUrlDialog, setShowUrlDialog] = useState(false);
+  const [displayQRSource, setDisplayQRSource] = useState(false);
+  const [QRCodeSource, setQRCodeSource] = useState("");
 
   const lambdaUrl =
     "https://1y7dwhyt4g.execute-api.us-east-1.amazonaws.com/development/create-issue"; // Replace with your Lambda function URL
@@ -68,7 +71,12 @@ function App() {
       });
     }
 
-    if (email === "" || summary === "" || requestType === null) {
+    if (
+      email === "" ||
+      summary === "" ||
+      requestType === null ||
+      requester === ""
+    ) {
       return toast.error("Please fill out all required fields", {
         position: "top-right",
         autoClose: 5000,
@@ -96,6 +104,32 @@ function App() {
       }
     }
 
+    if (displayQRSource && QRCodeSource === "") {
+      return toast.error("Please fill out all required fields", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    if (requestType === "Bug/Broken functionality" && severity === null) {
+      return toast.error("Please fill out all required fields", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
     // Check if URL is empty
     if (!url.trim()) {
       setShowUrlDialog(true);
@@ -107,14 +141,17 @@ function App() {
 
   const finishSubmission = async () => {
     setEmail("");
+    setRequester("");
     setSummary("");
     setDescription("");
     setStepsToReproduce("");
+    setQRCodeSource("");
     setUrl("");
     setRequestType(null);
     setSeverity(null);
     setDueDate(null);
     setShowUrlDialog(false);
+    setDisplayQRSource(false);
     setLoading(true);
 
     let data = {
@@ -126,6 +163,8 @@ function App() {
       url,
       severity,
       duedate: dueDate,
+      QRCodeSource,
+      requester,
     };
 
     if (files.length > 0) data.uploadedFiles = files;
@@ -230,20 +269,36 @@ function App() {
         {loading ? (
           <Loading />
         ) : (
-          <form className="flex flex-col mt-4 gap-6 md:mx-auto">
+          <form className="flex flex-col mt-4 gap-2 md:mx-auto duration-300 transition-all">
             <div className="flex flex-col">
               <label className="font-bold" htmlFor="email">
-                Email<span className="text-red-600">*</span>
+                Full Name<span className="text-red-600">*</span>
               </label>
+              <p className="text-sm text-gray-600">Name of the requester</p>
               <input
                 className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
                 type="text"
-                placeholder="john.doe@umassmemorial.org"
+                placeholder="Short answer text"
+                value={requester}
+                onChange={(e) => setRequester(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col mt-4">
+              <label className="font-bold" htmlFor="email">
+                Email<span className="text-red-600">*</span>
+              </label>
+              <p className="text-sm text-gray-600">
+                The email you wish to be contacted at regarding your request
+              </p>
+              <input
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                type="text"
+                placeholder="Short answer text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col mt-4">
               <label className="font-bold" htmlFor="summary">
                 Summary<span className="text-red-600">*</span>
               </label>
@@ -255,10 +310,20 @@ function App() {
                 type="text"
                 placeholder="Short answer text"
                 value={summary}
-                onChange={(e) => setSummary(e.target.value)}
+                onChange={(e) => {
+                  setSummary(e.target.value);
+                  if (
+                    e.target.value.toLocaleLowerCase().includes("qr") ||
+                    description.toLocaleLowerCase().includes("qr")
+                  ) {
+                    setDisplayQRSource(true);
+                  } else {
+                    setDisplayQRSource(false);
+                  }
+                }}
               />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col mt-4">
               <label className="font-bold" htmlFor="description">
                 Description
               </label>
@@ -271,13 +336,50 @@ function App() {
                 placeholder="Long answer text"
                 rows="4"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  if (
+                    e.target.value.toLocaleLowerCase().includes("qr") ||
+                    summary.toLocaleLowerCase().includes("qr")
+                  ) {
+                    setDisplayQRSource(true);
+                  } else {
+                    setDisplayQRSource(false);
+                  }
+                }}
               />
             </div>
-            <div className="flex flex-col">
+
+            <div
+              className={`flex flex-col transition-all duration-300 overflow-hidden ${
+                displayQRSource
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 my-4"
+                  : "opacity-0 max-h-0 translate-y-4"
+              }`}
+            >
+              <label className="font-bold" htmlFor="summary">
+                QR Code Source<span className="text-red-600">*</span>
+              </label>
+              <p className="text-sm text-gray-600">
+                Where the QR code traffic will come from (ex. poster, menu,
+                etc.)
+              </p>
+              <input
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                type="text"
+                placeholder="Short answer text"
+                value={QRCodeSource}
+                onChange={(e) => setQRCodeSource(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col mt-4">
               <label className="font-bold" htmlFor="requestType">
                 Request Type<span className="text-red-600">*</span>
               </label>
+              <p className="text-sm text-gray-600">
+                Please select the request type that best matches your request
+              </p>
 
               <fieldset className="flex flex-col gap-2">
                 <div className="flex mt-2">
@@ -294,7 +396,7 @@ function App() {
                   </div>
                   <div className="ml-2 text-sm">
                     <label htmlFor="bug" className="font-medium text-gray-900">
-                      Bug
+                      Bug/Broken functionality
                     </label>
                     <p
                       id="bug-description"
@@ -324,7 +426,7 @@ function App() {
                       htmlFor="improvement"
                       className="font-medium text-gray-900"
                     >
-                      Improvement
+                      Improvement to existing feature/page
                     </label>
                     <p
                       id="improvement-description"
@@ -349,7 +451,7 @@ function App() {
                   </div>
                   <div className="ml-2 text-sm">
                     <label htmlFor="new" className="font-medium text-gray-900">
-                      New Feature/Page
+                      New feature/page request
                     </label>
                     <p
                       id="new-description"
@@ -359,10 +461,44 @@ function App() {
                     </p>
                   </div>
                 </div>
+
+                <div className="flex">
+                  <div className="flex items-center h-5">
+                    <input
+                      type="radio"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                      name="requestType"
+                      id="change"
+                      value="Change request"
+                      checked={requestType === "Change request"}
+                      onChange={(e) => setRequestType(e.target.value)}
+                    />
+                  </div>
+                  <div className="ml-2 text-sm">
+                    <label
+                      htmlFor="change"
+                      className="font-medium text-gray-900"
+                    >
+                      Change request
+                    </label>
+                    <p
+                      id="new-description"
+                      className="text-xs font-normal text-gray-500"
+                    >
+                      Request for something to be changed on a page.
+                    </p>
+                  </div>
+                </div>
               </fieldset>
             </div>
 
-            <div className="flex flex-col">
+            <div
+              className={`flex flex-col transition-all duration-300 overflow-hidden ${
+                requestType === "Bug/Broken functionality"
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 my-4"
+                  : "opacity-0 max-h-0 translate-y-4"
+              }`}
+            >
               <label className="font-bold" htmlFor="stepstoreproduce">
                 Steps to Reproduce
               </label>
@@ -380,7 +516,11 @@ function App() {
               />
             </div>
 
-            <div className="flex flex-col">
+            <div
+              className={`flex flex-col ${
+                requestType === "Bug/Broken functionality" ? "" : "mt-4"
+              }`}
+            >
               <label className="font-bold" htmlFor="url">
                 URL
               </label>
@@ -397,18 +537,27 @@ function App() {
               />
             </div>
 
-            <div className="flex flex-col">
+            <div
+              className={`flex flex-col transition-all duration-300 overflow-hidden ${
+                requestType === "Bug/Broken functionality"
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 my-4"
+                  : "opacity-0 max-h-0 translate-y-4"
+              }`}
+            >
               <label className="font-bold" htmlFor="severity">
-                Severity
+                Severity<span className="text-red-600">*</span>
               </label>
+              <p className="text-sm text-gray-600">
+                The degree to which functionality is hindered
+              </p>
 
               <fieldset className="flex flex-col gap-2">
-                <div class="flex mt-2">
-                  <div class="flex items-center h-5">
+                <div className="flex mt-2">
+                  <div className="flex items-center h-5">
                     <input
                       aria-describedby="helper-radio-text"
                       type="radio"
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
                       name="severity"
                       id="highest"
                       value="Highest - Critical functionality is broken and a fix is needed as soon as possible"
@@ -419,23 +568,29 @@ function App() {
                       onChange={(e) => setSeverity(e.target.value)}
                     />
                   </div>
-                  <div class="ml-2 text-sm">
-                    <label for="highest" class="font-medium text-gray-900 ">
+                  <div className="ml-2 text-sm">
+                    <label
+                      htmlFor="highest"
+                      className="font-medium text-gray-900 "
+                    >
                       Highest
                     </label>
-                    <p id="highest" class="text-xs font-normal text-gray-500">
+                    <p
+                      id="highest"
+                      className="text-xs font-normal text-gray-500"
+                    >
                       Critical functionality is broken and a fix is needed as
                       soon as possible
                     </p>
                   </div>
                 </div>
 
-                <div class="flex">
-                  <div class="flex items-center h-5">
+                <div className="flex">
+                  <div className="flex items-center h-5">
                     <input
                       aria-describedby="helper-radio-text"
                       type="radio"
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
                       name="severity"
                       id="high"
                       value="High - Functionality is limited and/or a deadline is quickly approaching"
@@ -446,23 +601,26 @@ function App() {
                       onChange={(e) => setSeverity(e.target.value)}
                     />
                   </div>
-                  <div class="ml-2 text-sm">
-                    <label for="high" class="font-medium text-gray-900 ">
+                  <div className="ml-2 text-sm">
+                    <label
+                      htmlFor="high"
+                      className="font-medium text-gray-900 "
+                    >
                       High
                     </label>
-                    <p id="high" class="text-xs font-normal text-gray-500">
+                    <p id="high" className="text-xs font-normal text-gray-500">
                       Functionality is limited and/or a deadline is quickly
                       approaching
                     </p>
                   </div>
                 </div>
 
-                <div class="flex">
-                  <div class="flex items-center h-5">
+                <div className="flex">
+                  <div className="flex items-center h-5">
                     <input
                       aria-describedby="helper-radio-text"
                       type="radio"
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
                       name="severity"
                       id="medium"
                       value="Medium - A workaround exists and this issue can be addressed in the next development cycle"
@@ -473,23 +631,29 @@ function App() {
                       onChange={(e) => setSeverity(e.target.value)}
                     />
                   </div>
-                  <div class="ml-2 text-sm">
-                    <label for="medium" class="font-medium text-gray-900 ">
+                  <div className="ml-2 text-sm">
+                    <label
+                      htmlFor="medium"
+                      className="font-medium text-gray-900 "
+                    >
                       Medium
                     </label>
-                    <p id="medium" class="text-xs font-normal text-gray-500">
+                    <p
+                      id="medium"
+                      className="text-xs font-normal text-gray-500"
+                    >
                       A workaround exists and this issue can be addressed in the
                       next development cycle
                     </p>
                   </div>
                 </div>
 
-                <div class="flex">
-                  <div class="flex items-center h-5">
+                <div className="flex">
+                  <div className="flex items-center h-5">
                     <input
                       aria-describedby="helper-radio-text"
                       type="radio"
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
                       name="severity"
                       id="low"
                       value="Low - A workaround exists and there is no immediate deadline, this can be worked on in the future"
@@ -500,11 +664,14 @@ function App() {
                       onChange={(e) => setSeverity(e.target.value)}
                     />
                   </div>
-                  <div class="ml-2 text-sm">
-                    <label for="low" class="font-medium text-gray-900 ">
+                  <div className="ml-2 text-sm">
+                    <label htmlFor="low" className="font-medium text-gray-900 ">
                       Low
                     </label>
-                    <p id="highest" class="text-xs font-normal text-gray-500">
+                    <p
+                      id="highest"
+                      className="text-xs font-normal text-gray-500"
+                    >
                       A workaround exists and there is no immediate deadline,
                       this can be worked on in the future
                     </p>
@@ -513,10 +680,17 @@ function App() {
               </fieldset>
             </div>
 
-            <div className="flex flex-col">
+            <div
+              className={`flex flex-col ${
+                requestType === "Bug/Broken functionality" ? "" : "mt-4"
+              }`}
+            >
               <label className="font-bold" htmlFor="duedate">
                 Due Date
               </label>
+              <p className="text-sm text-gray-600">
+                The deadline by which the request is ideally completed
+              </p>
               <input
                 className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
                 type="date"
@@ -525,10 +699,14 @@ function App() {
               />
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col mt-4">
               <label className="font-bold" htmlFor="export">
                 Submit any relevant attachments below
               </label>
+              <p className="text-sm text-gray-600">
+                Files that will help the digital services team assist your
+                request
+              </p>
               <input
                 className="mt-1"
                 type="file"
@@ -537,7 +715,7 @@ function App() {
               />
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col mt-4">
               <button
                 className="shadow-lg w-fit mx-auto font-bold rounded-lg py-3 px-12   mt-5 bg-[#10069f] text-white hover:bg-white hover:text-[#10069f] transition-all duration-200"
                 type="submit"
