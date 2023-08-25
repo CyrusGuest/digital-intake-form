@@ -25,30 +25,41 @@ function App() {
   const lambdaUrl =
     "https://1y7dwhyt4g.execute-api.us-east-1.amazonaws.com/development/create-issue"; // Replace with your Lambda function URL
 
-  const handleFileChange = (e) => {
-    const fileList = [...e.target.files];
-    const encodedFiles = [];
+  const isDateValid = (dateString) => {
+    const inputDate = new Date(dateString);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    fileList.forEach((file, index) => {
+    return inputDate >= today;
+  };
+
+  const handleFileChange = (e) => {
+    const newFiles = [...files];
+    const fileList = [...e.target.files];
+
+    fileList.forEach((file) => {
       const reader = new FileReader();
 
       reader.onloadend = function () {
         const base64String = reader.result.replace(/^data:(.*;base64,)?/, "");
 
-        encodedFiles.push({
+        newFiles.push({
           name: file.name,
           mimeType: file.type,
           content: base64String,
         });
 
-        // Check if we've processed all files
-        if (encodedFiles.length === fileList.length) {
-          setFiles(encodedFiles);
-        }
+        setFiles(newFiles);
       };
 
       reader.readAsDataURL(file);
     });
+  };
+
+  const handleRemoveFile = (index) => {
+    const newFiles = [...files];
+    newFiles.splice(index, 1);
+    setFiles(newFiles);
   };
 
   const handleSubmit = async (e) => {
@@ -119,6 +130,19 @@ function App() {
 
     if (requestType === "Bug/Broken functionality" && severity === null) {
       return toast.error("Please fill out all required fields", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    if (dueDate && !isDateValid(dueDate)) {
+      return toast.error("Please enter a valid due dates", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -707,17 +731,38 @@ function App() {
                 Files that will help the digital services team assist your
                 request
               </p>
-              <input
-                className="mt-1"
-                type="file"
-                multiple
-                onChange={handleFileChange}
-              />
+              <div className="relative">
+                <input
+                  className="opacity-0 absolute inset-0 w-full h-full z-10 cursor-pointer"
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                />
+                <div className="shadow-lg w-fit cursor-pointer font-bold rounded-lg py-3 px-12 mt-5 bg-[#10069f] text-white hover:bg-white hover:text-[#10069f] transition-all duration-200">
+                  Attach
+                </div>
+              </div>
+              <div className="mt-3">
+                {files.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center py-2 border-t"
+                  >
+                    <p>{file.name}</p>
+                    <button
+                      className="text-red-600 hover:text-red-800"
+                      onClick={() => handleRemoveFile(index)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="flex flex-col mt-4">
               <button
-                className="shadow-lg w-fit mx-auto font-bold rounded-lg py-3 px-12   mt-5 bg-[#10069f] text-white hover:bg-white hover:text-[#10069f] transition-all duration-200"
+                className="shadow-lg w-fit mx-auto font-bold rounded-lg py-3 px-12 mt-5 bg-[#10069f] text-white hover:bg-white hover:text-[#10069f] transition-all duration-200"
                 type="submit"
                 onClick={(e) => handleSubmit(e)}
               >
