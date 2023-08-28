@@ -142,7 +142,7 @@ function App() {
     }
 
     if (dueDate && !isDateValid(dueDate)) {
-      return toast.error("Please enter a valid due dates", {
+      return toast.error("Please enter a valid due date", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -312,11 +312,12 @@ function App() {
                 Email<span className="text-red-600">*</span>
               </label>
               <p className="text-sm text-gray-600">
-                The email you wish to be contacted at regarding your request
+                The email where we may contact you with questions or to confirm
+                receipt.
               </p>
               <input
                 className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
-                type="text"
+                type="email"
                 placeholder="Short answer text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -352,7 +353,8 @@ function App() {
                 Description
               </label>
               <p className="text-sm text-gray-600">
-                A more thorough explanation of what you are requesting
+                A more detailed explanation of your request or problem you're
+                trying to solve.
               </p>
               <textarea
                 className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
