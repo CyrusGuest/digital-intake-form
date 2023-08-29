@@ -21,6 +21,9 @@ function App() {
   const [showUrlDialog, setShowUrlDialog] = useState(false);
   const [displayQRSource, setDisplayQRSource] = useState(false);
   const [QRCodeSource, setQRCodeSource] = useState("");
+  const [KPIs, setKPIs] = useState("");
+  const [dataPoints, setDataPoints] = useState("");
+  const [timeFrame, setTimeFrame] = useState("");
 
   const lambdaUrl =
     "https://1y7dwhyt4g.execute-api.us-east-1.amazonaws.com/development/create-issue"; // Replace with your Lambda function URL
@@ -141,6 +144,23 @@ function App() {
       });
     }
 
+    if (
+      (requestType === "Analytics request" && dataPoints === "") ||
+      (requestType === "Analytics request" && KPIs === "") ||
+      (requestType === "Analytics request" && timeFrame === "")
+    ) {
+      return toast.error("Please fill out all required fields", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
     if (dueDate && !isDateValid(dueDate)) {
       return toast.error("Please enter a valid due date", {
         position: "top-right",
@@ -189,6 +209,9 @@ function App() {
       duedate: dueDate,
       QRCodeSource,
       requester,
+      KPIs,
+      dataPoints,
+      timeFrame,
     };
 
     if (files.length > 0) data.uploadedFiles = files;
@@ -293,8 +316,8 @@ function App() {
         {loading ? (
           <Loading />
         ) : (
-          <form className="flex flex-col mt-4 gap-2 md:mx-auto duration-300 transition-all">
-            <div className="flex flex-col">
+          <form className="flex flex-col mt-4 md:mx-auto duration-300 transition-all">
+            <div className="flex flex-col mb-2">
               <label className="font-bold" htmlFor="email">
                 Full Name<span className="text-red-600">*</span>
               </label>
@@ -307,7 +330,7 @@ function App() {
                 onChange={(e) => setRequester(e.target.value)}
               />
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-4 mb-2">
               <label className="font-bold" htmlFor="email">
                 Email<span className="text-red-600">*</span>
               </label>
@@ -323,7 +346,7 @@ function App() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-4 mb-2">
               <label className="font-bold" htmlFor="summary">
                 Summary<span className="text-red-600">*</span>
               </label>
@@ -348,7 +371,7 @@ function App() {
                 }}
               />
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-4 mb-2">
               <label className="font-bold" htmlFor="description">
                 Description
               </label>
@@ -399,7 +422,7 @@ function App() {
               />
             </div>
 
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-4 mb-2">
               <label className="font-bold" htmlFor="requestType">
                 Request Type<span className="text-red-600">*</span>
               </label>
@@ -515,11 +538,109 @@ function App() {
                     </p>
                   </div>
                 </div>
+
+                <div className="flex">
+                  <div className="flex items-center h-5">
+                    <input
+                      type="radio"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                      name="requestType"
+                      id="analytics"
+                      value="Analytics request"
+                      checked={requestType === "Analytics request"}
+                      onChange={(e) => setRequestType(e.target.value)}
+                    />
+                  </div>
+                  <div className="ml-2 text-sm">
+                    <label
+                      htmlFor="analytics"
+                      className="font-medium text-gray-900"
+                    >
+                      Analytics request
+                    </label>
+                    <p
+                      id="new-description"
+                      className="text-xs font-normal text-gray-500"
+                    >
+                      Any request related to analytics.
+                    </p>
+                  </div>
+                </div>
               </fieldset>
             </div>
 
             <div
-              className={`flex flex-col transition-all duration-300 overflow-hidden ${
+              className={`flex flex-col transition-all duration-300 overflow-hidden shadow-lg ${
+                requestType === "Analytics request"
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 mt-4 mb-2"
+                  : "opacity-0 max-h-0 translate-y-4"
+              }`}
+            >
+              <label className="font-bold" htmlFor="stepstoreproduce">
+                Key Performance Indicators (KPIs)
+                <span className="text-red-600">*</span>
+              </label>
+              <p className="text-sm text-gray-600">
+                What specific metrics or KPIs (Key Performance Indicators) are
+                you looking to track or improve?
+              </p>
+              <input
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                type="text"
+                placeholder="Short answer text"
+                value={KPIs}
+                onChange={(e) => setKPIs(e.target.value)}
+              />
+            </div>
+
+            <div
+              className={`flex flex-col transition-all duration-300 overflow-hidden shadow-lg ${
+                requestType === "Analytics request"
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 mt-4 mb-2"
+                  : "opacity-0 max-h-0 translate-y-4"
+              }`}
+            >
+              <label className="font-bold" htmlFor="stepstoreproduce">
+                Tracked Data Points<span className="text-red-600">*</span>
+              </label>
+              <p className="text-sm text-gray-600">
+                Which data points are you interested in tracking - pageviews,
+                unique visitors, engagement rate, time on site, etc.?
+              </p>
+              <input
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2 shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                type="text"
+                placeholder="Short answer text"
+                value={dataPoints}
+                onChange={(e) => setDataPoints(e.target.value)}
+              />
+            </div>
+
+            <div
+              className={`flex flex-col transition-all duration-300 overflow-hidden shadow-lg ${
+                requestType === "Analytics request"
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 mt-4 mb-2"
+                  : "opacity-0 max-h-0 translate-y-4"
+              }`}
+            >
+              <label className="font-bold" htmlFor="stepstoreproduce">
+                Time Frame<span className="text-red-600">*</span>
+              </label>
+              <p className="text-sm text-gray-600">
+                What is the time frame you want to analyze? (e.g. daily, weekly,
+                monthly, quarterly, yearly)
+              </p>
+              <input
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                type="text"
+                placeholder="Short answer text"
+                value={timeFrame}
+                onChange={(e) => setTimeFrame(e.target.value)}
+              />
+            </div>
+
+            <div
+              className={`flex flex-col transition-all duration-300 overflow-hidden shadow-lg ${
                 requestType === "Bug/Broken functionality"
                   ? "opacity-100 max-h-[100vh] transform translate-y-0 my-4"
                   : "opacity-0 max-h-0 translate-y-4"
@@ -542,11 +663,7 @@ function App() {
               />
             </div>
 
-            <div
-              className={`flex flex-col ${
-                requestType === "Bug/Broken functionality" ? "" : "mt-4"
-              }`}
-            >
+            <div className={`flex flex-col mt-4 mb-2`}>
               <label className="font-bold" htmlFor="url">
                 URL
               </label>
@@ -566,7 +683,7 @@ function App() {
             <div
               className={`flex flex-col transition-all duration-300 overflow-hidden ${
                 requestType === "Bug/Broken functionality"
-                  ? "opacity-100 max-h-[100vh] transform translate-y-0 my-4"
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 my-4 mb-6"
                   : "opacity-0 max-h-0 translate-y-4"
               }`}
             >
@@ -708,7 +825,9 @@ function App() {
 
             <div
               className={`flex flex-col ${
-                requestType === "Bug/Broken functionality" ? "" : "mt-4"
+                requestType === "Bug/Broken functionality"
+                  ? "mb-2 "
+                  : "mt-4 mb-2"
               }`}
             >
               <label className="font-bold" htmlFor="duedate">
