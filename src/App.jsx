@@ -20,10 +20,15 @@ function App() {
   const [ticketID, setTicketID] = useState(null);
   const [showUrlDialog, setShowUrlDialog] = useState(false);
   const [displayQRSource, setDisplayQRSource] = useState(false);
-  const [QRCodeSource, setQRCodeSource] = useState("");
   const [KPIs, setKPIs] = useState("");
   const [dataPoints, setDataPoints] = useState("");
   const [timeFrame, setTimeFrame] = useState("");
+  const [QRCode, setQRCode] = useState({
+    purpose: "",
+    location: "",
+    quantity: "",
+    destination: "",
+  });
 
   const lambdaUrl =
     "https://1y7dwhyt4g.execute-api.us-east-1.amazonaws.com/development/create-issue"; // Replace with your Lambda function URL
@@ -89,7 +94,8 @@ function App() {
       email === "" ||
       summary === "" ||
       requestType === null ||
-      requester === ""
+      requester === "" ||
+      description === ""
     ) {
       return toast.error("Please fill out all required fields", {
         position: "top-right",
@@ -118,7 +124,12 @@ function App() {
       }
     }
 
-    if (displayQRSource && QRCodeSource === "") {
+    if (
+      (displayQRSource && QRCode.destination === "") ||
+      (displayQRSource && QRCode.purpose === "") ||
+      (displayQRSource && QRCode.quantity === "") ||
+      (displayQRSource && QRCode.location === "")
+    ) {
       return toast.error("Please fill out all required fields", {
         position: "top-right",
         autoClose: 5000,
@@ -189,7 +200,12 @@ function App() {
     setSummary("");
     setDescription("");
     setStepsToReproduce("");
-    setQRCodeSource("");
+    setQRCode({
+      purpose: "",
+      location: "",
+      quantity: "",
+      destination: "",
+    });
     setUrl("");
     setRequestType(null);
     setSeverity(null);
@@ -197,6 +213,9 @@ function App() {
     setShowUrlDialog(false);
     setDisplayQRSource(false);
     setLoading(true);
+    setKPIs("");
+    setDataPoints("");
+    setTimeFrame("");
 
     let data = {
       email,
@@ -207,7 +226,7 @@ function App() {
       url,
       severity,
       duedate: dueDate,
-      QRCodeSource,
+      QRCode,
       requester,
       KPIs,
       dataPoints,
@@ -373,7 +392,7 @@ function App() {
             </div>
             <div className="flex flex-col mt-4 mb-2">
               <label className="font-bold" htmlFor="description">
-                Description
+                Description<span className="text-red-600">*</span>
               </label>
               <p className="text-sm text-gray-600">
                 A more detailed explanation of your request or problem you're
@@ -407,18 +426,92 @@ function App() {
               }`}
             >
               <label className="font-bold" htmlFor="summary">
-                QR Code Source<span className="text-red-600">*</span>
+                QR Code Purpose<span className="text-red-600">*</span>
               </label>
               <p className="text-sm text-gray-600">
-                Where the QR code traffic will come from (ex. poster, menu,
-                etc.)
+                What is the purpose of the QR code you are requesting?
               </p>
               <input
                 className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
-                value={QRCodeSource}
-                onChange={(e) => setQRCodeSource(e.target.value)}
+                value={QRCode.purpose}
+                onChange={(e) =>
+                  setQRCode({ ...QRCode, purpose: e.target.value })
+                }
+              />
+            </div>
+
+            <div
+              className={`flex flex-col transition-all duration-300 overflow-hidden ${
+                displayQRSource
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 my-4"
+                  : "opacity-0 max-h-0 translate-y-4"
+              }`}
+            >
+              <label className="font-bold" htmlFor="summary">
+                QR Code Location<span className="text-red-600">*</span>
+              </label>
+              <p className="text-sm text-gray-600">
+                Where will the QR code be placed? (e.g., poster, direct mail,
+                menu, etc.)
+              </p>
+              <input
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                type="text"
+                placeholder="Short answer text"
+                value={QRCode.location}
+                onChange={(e) =>
+                  setQRCode({ ...QRCode, location: e.target.value })
+                }
+              />
+            </div>
+
+            <div
+              className={`flex flex-col transition-all duration-300 overflow-hidden ${
+                displayQRSource
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 my-4"
+                  : "opacity-0 max-h-0 translate-y-4"
+              }`}
+            >
+              <label className="font-bold" htmlFor="summary">
+                QR Code Quantity<span className="text-red-600">*</span>
+              </label>
+              <p className="text-sm text-gray-600">
+                What quantity will be distributed?
+              </p>
+              <input
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                type="text"
+                placeholder="Short answer text"
+                value={QRCode.quantity}
+                onChange={(e) =>
+                  setQRCode({ ...QRCode, quantity: e.target.value })
+                }
+              />
+            </div>
+
+            <div
+              className={`flex flex-col transition-all duration-300 overflow-hidden ${
+                displayQRSource
+                  ? "opacity-100 max-h-[100vh] transform translate-y-0 my-4"
+                  : "opacity-0 max-h-0 translate-y-4"
+              }`}
+            >
+              <label className="font-bold" htmlFor="summary">
+                QR Code Destination<span className="text-red-600">*</span>
+              </label>
+              <p className="text-sm text-gray-600">
+                Where will the QR code drive to? Include URL if applicable.
+              </p>
+              <input
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                type="text"
+                placeholder="Short answer text"
+                value={QRCode.destination}
+                onChange={(e) =>
+                  setQRCode({ ...QRCode, destination: e.target.value })
+                }
               />
             </div>
 
@@ -562,7 +655,7 @@ function App() {
                       id="new-description"
                       className="text-xs font-normal text-gray-500"
                     >
-                      Any request related to analytics.
+                      Request related to website analytics.
                     </p>
                   </div>
                 </div>
