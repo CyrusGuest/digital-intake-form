@@ -342,7 +342,7 @@ function App() {
               </label>
               <p className="text-sm text-gray-600">Name of the requester</p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={requester}
@@ -358,7 +358,7 @@ function App() {
                 receipt.
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="email"
                 placeholder="Short answer text"
                 value={email}
@@ -373,7 +373,7 @@ function App() {
                 A quick, one sentence summary of the request
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={summary}
@@ -399,7 +399,7 @@ function App() {
                 trying to solve.
               </p>
               <textarea
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Long answer text"
                 rows="4"
@@ -432,7 +432,7 @@ function App() {
                 What is the purpose of the QR code you are requesting?
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={QRCode.purpose}
@@ -457,7 +457,7 @@ function App() {
                 menu, etc.)
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={QRCode.location}
@@ -481,7 +481,7 @@ function App() {
                 What quantity will be distributed?
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={QRCode.quantity}
@@ -505,7 +505,7 @@ function App() {
                 Where will the QR code drive to? Include URL if applicable.
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={QRCode.destination}
@@ -678,7 +678,7 @@ function App() {
                 you looking to track or improve?
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={KPIs}
@@ -701,7 +701,7 @@ function App() {
                 unique visitors, engagement rate, time on site, etc.?
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2 shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2 shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={dataPoints}
@@ -724,7 +724,7 @@ function App() {
                 monthly, quarterly, yearly)
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={timeFrame}
@@ -747,7 +747,7 @@ function App() {
                 what you are seeing and what the expected result is
               </p>
               <textarea
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Long answer text"
                 rows="4"
@@ -765,7 +765,7 @@ function App() {
                 requesting changes (format: https://www.website.com)
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="text"
                 placeholder="Short answer text"
                 value={url}
@@ -930,7 +930,7 @@ function App() {
                 The deadline by which the request is ideally completed
               </p>
               <input
-                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#333B4D] transition-all ease-linear duration-200"
+                className="outline-none box-border rounded-lg p-2 mt-1 border-2  shadow-lg focus:border-[#10069f] placeholder-[#898d97] transition-all ease-linear duration-200"
                 type="date"
                 value={dueDate || ""}
                 onChange={(e) => setDueDate(e.target.value)}
