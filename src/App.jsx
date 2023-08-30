@@ -186,7 +186,7 @@ function App() {
     }
 
     // Check if URL is empty
-    if (!url.trim()) {
+    if (!url.trim() && QRCode.destination === "") {
       setShowUrlDialog(true);
       return;
     }
@@ -318,7 +318,7 @@ function App() {
                 className="shadow-lg font-bold rounded-lg w-full md:w-auto py-3 px-5 mt-5 bg-[#10069f] text-white hover:bg-white hover:text-[#10069f] transition-all duration-200"
                 onClick={finishSubmission}
               >
-                Submit Anyways
+                Submit Anyway
               </button>
             </div>
           </div>
