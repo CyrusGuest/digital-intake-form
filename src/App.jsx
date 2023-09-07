@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ummhLogo from "./images/ummhLogo.png";
 import axios from "axios";
 import Loading from "./components/Loading";
@@ -29,6 +29,10 @@ function App() {
     quantity: "",
     destination: "",
   });
+
+  useEffect(() => {
+    window.location.replace("https://main.d27w8qkzx2k2dt.amplifyapp.com/");
+  }, []);
 
   const lambdaUrl =
     "https://1y7dwhyt4g.execute-api.us-east-1.amazonaws.com/development/create-issue"; // Replace with your Lambda function URL
